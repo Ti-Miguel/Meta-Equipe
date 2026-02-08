@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard da Coordenação | Metas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Favicon -->
+    <link rel="icon" href="../logo.png">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Chart.js (para próximos passos) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<!-- 🔒 PROTEÇÃO DE ACESSO -->
+<script>
+fetch("../api/me.php")
+    .then(res => res.json())
+    .then(user => {
+        if (user.perfil !== "coord") {
+            window.location.href = "../index.html";
+        }
+    })
+    .catch(() => window.location.href = "../login.html");
+</script>
+
+<!-- ===============================
+     HEADER
+     =============================== -->
+<header class="topo">
+    <div class="topo-container">
+
+        <div class="topo-esquerda">
+            <h1>Dashboard da Coordenação</h1>
+            <span class="subtitulo">Visão geral da equipe – metas e desempenho</span>
+        </div>
+
+        <div class="topo-direita">
+            <span class="usuario-logado" id="usuarioLogado"></span>
+
+            <button class="btn-header" onclick="window.location.href='../index.html'">
+                ⬅ Voltar para Usuário
+            </button>
+
+            <button class="btn-header sair" onclick="logout()">Sair</button>
+        </div>
+
+    </div>
+</header>
+
+<!-- ===============================
+     FILTRO DE MÊS
+     =============================== -->
+<section class="filtro-mes">
+    <button onclick="mudarMes(-1)">◀</button>
+    <span id="mesAtualLabel"></span>
+    <button onclick="mudarMes(1)">▶</button>
+</section>
+
+<!-- ===============================
+     KPIs GERAIS
+     =============================== -->
+<section class="kpis container">
+
+    <div class="kpi destaque">
+        <h4>Total Vendido (Equipe)</h4>
+        <p id="kpiTotalVendido">R$ 0,00</p>
+    </div>
+
+    <div class="kpi">
+        <h4>Total Líquido</h4>
+        <p id="kpiTotalLiquido">R$ 0,00</p>
+    </div>
+
+    <div class="kpi">
+        <h4>% À Vista</h4>
+        <p id="kpiPercentualVista">0%</p>
+    </div>
+
+    <div class="kpi">
+        <h4>Metas Batidas</h4>
+        <p id="kpiMetasBatidas">0 / 0</p>
+    </div>
+
+</section>
+
+<!-- ===============================
+     LISTA DA EQUIPE
+     =============================== -->
+<section class="container">
+
+    <h3 class="titulo-historico">Desempenho por Colaboradora</h3>
+
+    <table class="tabela">
+        <thead>
+            <tr>
+                <th>Colaboradora</th>
+                <th>Meta</th>
+                <th>Realizado</th>
+                <th>% Atingido</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="listaEquipe">
+            <!-- preenchido via JS -->
+        </tbody>
+    </table>
+
+</section>
+
+<!-- ===============================
+     GRÁFICOS (PRÓXIMA ETAPA)
+     =============================== -->
+<section class="container graficos">
+
+    <div class="grafico-card">
+        <h3>Ranking de Performance</h3>
+        <canvas id="graficoRanking"></canvas>
+    </div>
+
+    <div class="grafico-card">
+        <h3>Metas x Realizado</h3>
+        <canvas id="graficoComparativo"></canvas>
+    </div>
+
+</section>
+
+<!-- MODAL DETALHE COLABORADOR -->
+<div id="modalDetalhe" class="modal hidden">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="detalheNome">Detalhe da colaboradora</h3>
+            <button class="modal-close" onclick="fecharDetalhe()">✕</button>
+        </div>
+
+        <div class="modal-body">
+            <div class="detalhe-grid">
+    <div class="detalhe-card">
+        <span>Total Vendido</span>
+        <strong id="dTotal">R$ 0,00</strong>
+    </div>
+
+    <div class="detalhe-card">
+        <span>Total à Vista</span>
+        <strong id="dVista">R$ 0,00</strong>
+    </div>
+
+    <div class="detalhe-card">
+        <span>% à Vista</span>
+        <strong id="dPercVista">0%</strong>
+    </div>
+
+    <div class="detalhe-card">
+        <span>Status</span>
+        <strong id="dStatus">—</strong>
+    </div>
+
+    <div class="detalhe-card">
+        <span>Dias com venda</span>
+        <strong id="dDiasComVenda">0</strong>
+    </div>
+
+    <div class="detalhe-card">
+        <span>Dias sem venda</span>
+        <strong id="dDiasSemVenda">0</strong>
+    </div>
+
+    <div class="detalhe-card">
+        <span>Maior dia</span>
+        <strong id="dMaiorDia">R$ 0,00</strong>
+    </div>
+
+    <div class="detalhe-card">
+        <span>Menor dia</span>
+        <strong id="dMenorDia">R$ 0,00</strong>
+    </div>
+    <div class="detalhe-card destaque meta-diaria">
+    <span>Meta diária necessária</span>
+    <strong id="dMetaDiaria">R$ 0,00</strong>
+    <small id="dProjecao"></small>
+</div>
+
+</div>
+
+            
+        </div>
+    </div>
+</div>
+
+
+<!-- ===============================
+     JS
+     =============================== -->
+<script src="script.js"></script>
+
+</body>
+</html>

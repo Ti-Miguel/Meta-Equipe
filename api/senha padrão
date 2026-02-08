@@ -1,0 +1,7 @@
+INSERT INTO usuarios (nome, email, senha, perfil)
+VALUES (
+    'Nome da Colaboradora',
+    'email@dominio.com',
+    '$2y$10$aWqPQrfDiOhQ/Td1XnW9l.beNtLKsxC7fd60y2M/vr2FIk5V6C.l6',
+    'usuario'
+);

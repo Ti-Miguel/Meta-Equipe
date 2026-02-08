@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Metas da Equipe</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="logo.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<script>
+fetch("api/auth.php").catch(() => {
+    window.location.href = "login.html";
+});
+</script>
+
+
+<header class="topo">
+    <div class="topo-container">
+
+        <div class="topo-esquerda">
+            <h1>Metas Pós Consulta</h1>
+            <span class="subtitulo">Acompanhamento de desempenho mensal</span>
+        </div>
+
+        <div class="topo-direita">
+    <span class="usuario-logado" id="usuarioLogado"></span>
+
+    <button class="nav-mes" onclick="mudarMes(-1)">◀</button>
+    <span id="mesAtualLabel"></span>
+    <button class="nav-mes" onclick="mudarMes(1)">▶</button>
+
+    <button class="btn-header sair" onclick="logout()">Sair</button>
+    <button class="btn-hub" onclick="window.location.href='/hub.html'">↪ Hub de Sistemas</button>
+    
+
+</div>
+
+
+    </div>
+</header>
+
+
+
+<nav class="menu">
+    <button class="menu-coord" onclick="mostrarAba('config')">
+    Configuração de Meta
+</button>
+
+<button class="menu-coord" onclick="window.location.href='coord/index.html'">
+    Dashboard Coordenação
+</button>
+<button class="menu-operacional" onclick="mostrarAba('dashboard')">Dashboard</button>
+<button class="menu-operacional" onclick="mostrarAba('lancamento')">Lançamentos</button>
+<button class="menu-operacional" onclick="mostrarAba('estornos')">Estornos</button>
+<button class="menu-operacional" onclick="mostrarAba('fechamento')">Fechamento Mês</button>
+
+</nav>
+
+
+<main>
+
+<!-- DASHBOARD -->
+<section id="dashboard" class="aba ativa">
+    <div class="container">
+
+        <div class="kpis">
+            <div class="kpi destaque">
+                <h4>Total Vendido</h4>
+                <p id="totalVendido">R$ 0,00</p>
+            </div>
+
+            <div class="kpi">
+                <h4>Valor Líquido</h4>
+                <p id="valorLiquido">R$ 0,00</p>
+            </div>
+
+            <div class="kpi">
+                <h4>% Pagamentos à Vista</h4>
+                <p id="percentualVista">0%</p>
+            </div>
+            <div class="kpi meta-diaria">
+    <h4>Meta diária necessária</h4>
+    <p id="metaDiariaValor">—</p>
+    <small id="metaDiariaInfo"></small>
+</div>
+
+        </div>
+
+        <div class="metas">
+            <div class="meta-card">
+                <h4>Meta Geral</h4>
+                <strong id="metaGeralValor">R$ 0,00</strong>
+                <div class="barra"><div id="barraGeral"></div></div>
+            </div>
+
+            <div class="meta-card">
+                <h4>Meta Líquida</h4>
+                <strong id="metaLiquidaValor">R$ 0,00</strong>
+                <div class="barra"><div id="barraLiquida"></div></div>
+            </div>
+        </div>
+
+        <div class="graficos">
+            <div class="grafico-card grande">
+                <h3>Vendas por Dia</h3>
+                <canvas id="graficoDiario"></canvas>
+            </div>
+
+            <div class="grafico-card">
+                <h3>Evolução do Mês</h3>
+                <canvas id="graficoAcumulado"></canvas>
+            </div>
+
+            <div class="grafico-card">
+                <h3>Total x À Vista (por dia)</h3>
+                <canvas id="graficoVistaVsTotal"></canvas>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- LANÇAMENTOS -->
+<section id="lancamento" class="aba">
+    <div class="container">
+        <h2>Lançamento Diário</h2>
+
+        <form onsubmit="salvarLancamento(event)">
+            <input type="date" id="data" required>
+            <input type="number" id="totalDia" placeholder="Total vendido no dia" required>
+
+            <input type="number" id="credito" placeholder="Cartão de Crédito">
+            <input type="number" id="debito" placeholder="Débito">
+            <input type="number" id="dinheiro" placeholder="Dinheiro">
+            <input type="number" id="pix" placeholder="Pix">
+            <input type="number" id="boleto" placeholder="Boleto">
+
+            <button type="submit">Salvar Lançamento</button>
+        </form>
+
+<h3 class="titulo-historico">Histórico de Lançamentos</h3>
+
+        <table class="tabela">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Total</th>
+                    <th>À Vista</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="listaLancamentos"></tbody>
+        </table>
+    </div>
+</section>
+
+<!-- ESTORNOS -->
+<section id="estornos" class="aba">
+    <div class="container">
+        <h2>Estornos Realizados</h2>
+
+        <form onsubmit="salvarEstorno(event)">
+            <input type="date" id="dataEstorno" required>
+            <input type="text" id="pacienteEstorno" placeholder="Nome do paciente" required>
+            <input type="number" id="valorEstorno" placeholder="Valor do estorno" required>
+            <button type="submit">Salvar Estorno</button>
+        </form>
+
+<h3 class="titulo-historico">Histórico de Estornos</h3>
+
+        <table class="tabela">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Paciente</th>
+                    <th>Valor</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="listaEstornos"></tbody>
+        </table>
+    </div>
+</section>
+
+<!-- CONFIG META -->
+<section id="config" class="aba">
+    <div class="container">
+
+        <div class="config-card">
+            <h2>Configuração de Meta</h2>
+            <p class="config-sub">
+                Defina a meta mensal de cada colaboradora
+            </p>
+
+            <form onsubmit="salvarMetaUsuario(event)">
+                <label>Colaboradora</label>
+                <select id="usuarioMeta" required></select>
+
+                <label>Meta Geral do Mês</label>
+                <input type="number" id="metaGeralInput" placeholder="Ex: 100000" required>
+
+                <label>Meta Líquida do Mês</label>
+                <input type="number" id="metaLiquidaInput" placeholder="Ex: 80000" required>
+
+                <label>Dias de Produção</label>
+                <input type="number" id="diasMetaInput" placeholder="Ex: 20" required>
+
+                <button type="submit" class="btn-salvar-meta">
+                    Salvar Meta
+                </button>
+            </form>
+        </div>
+
+    </div>
+<h3 class="titulo-historico">Histórico de Metas</h3>
+
+<table class="tabela">
+    <thead>
+        <tr>
+            <th>Colaboradora</th>
+            <th>Mês</th>
+            <th>Meta Geral</th>
+            <th>Meta Líquida</th>
+            <th>Dias</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody id="listaMetas"></tbody>
+</table>
+
+</section>
+
+
+<!-- FECHAMENTO -->
+<section id="fechamento" class="aba">
+    <div class="container">
+        <h2>Fechamento Mensal</h2>
+
+        <div class="fechamento-resumo">
+            <div class="resumo-card destaque">
+                <span>Valor Líquido do Mês</span>
+                <strong id="fLiquido">R$ 0,00</strong>
+            </div>
+
+            <div class="resumo-card status" id="statusCard">
+                <span>Status da Meta</span>
+                <strong id="fStatusMeta">—</strong>
+            </div>
+        </div>
+
+        <div class="fechamento-cards">
+            <div class="fechamento-card">
+                <span>Total Bruto</span>
+                <strong id="fTotalBruto">R$ 0,00</strong>
+            </div>
+
+            <div class="fechamento-card alerta">
+                <span>Total Estornos</span>
+                <strong id="fEstornos">R$ 0,00</strong>
+            </div>
+
+            <div class="fechamento-card">
+                <span>% à Vista</span>
+                <strong id="fVistaValor">R$ 0,00</strong>
+<small id="fVistaPercentual">0%</small>
+
+            </div>
+        </div>
+        <div class="acoes-fechamento">
+    <button id="btnFecharMes" onclick="fecharMes()">Fechar Mês</button>
+    <button id="btnReabrirMes" onclick="reabrirMes()">Reabrir Mês</button>
+</div>
+
+    </div>
+</section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
