@@ -129,13 +129,14 @@ fetch("api/auth.php").catch(() => {
 
         <form onsubmit="salvarLancamento(event)">
             <input type="date" id="data" required>
-            <input type="number" id="totalDia" placeholder="Total vendido no dia" required>
+            <input type="text" id="totalDia" placeholder="Total vendido no dia" required>
 
-            <input type="number" id="credito" placeholder="Cartão de Crédito">
-            <input type="number" id="debito" placeholder="Débito">
-            <input type="number" id="dinheiro" placeholder="Dinheiro">
-            <input type="number" id="pix" placeholder="Pix">
-            <input type="number" id="boleto" placeholder="Boleto">
+<input type="text" id="credito" placeholder="Cartão de Crédito">
+<input type="text" id="debito" placeholder="Débito">
+<input type="text" id="dinheiro" placeholder="Dinheiro">
+<input type="text" id="pix" placeholder="Pix">
+<input type="text" id="boleto" placeholder="Boleto">
+
 
             <button type="submit">Salvar Lançamento</button>
         </form>

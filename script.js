@@ -177,22 +177,31 @@ async function salvarLancamento(e) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            id: editLanc,
-            ano_mes: mesSelecionado,
-            data: data.value,
-            total: Number(totalDia.value),
-            credito: Number(credito.value || 0),
-            debito: Number(debito.value || 0),
-            dinheiro: Number(dinheiro.value || 0),
-            pix: Number(pix.value || 0),
-            boleto: Number(boleto.value || 0)
-        })
+    id: editLanc,
+    ano_mes: mesSelecionado,
+    data: data.value,
+    total: converterValor(totalDia.value),
+    credito: converterValor(credito.value),
+    debito: converterValor(debito.value),
+    dinheiro: converterValor(dinheiro.value),
+    pix: converterValor(pix.value),
+    boleto: converterValor(boleto.value)
+})
+
     });
 
     editLanc = null;
     document.querySelector("#lancamento form").reset();
     carregarMes(mesSelecionado);
 }
+
+function converterValor(valor) {
+    if (!valor) return 0;
+    return parseFloat(
+        valor.replace(/\./g, "").replace(",", ".")
+    ) || 0;
+}
+
 
 function editarLancamento(id) {
     if (dados.meta.fechado == 1) return alert("Mês fechado.");
